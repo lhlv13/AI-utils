@@ -6,5 +6,5 @@
 以下我將藉由 Kaggle的 Ants&Bees 數據集來講解怎麼使用我的 package : <br>
 [數據集下載 : <a href="https://www.kaggle.com/datasets/gauravduttakiit/ants-bees" target="__blank">Ants&Bees Datasets</a>]
 
-* <br>將下載並解壓縮好的數據集放在 "AI-utils/"資料夾內</br>
-* <br>使用 "train_classifier.py"</br>
+*  **將下載並解壓縮好的數據集放在 ```AI-utils/```資料夾內**
+* **使用 """train_classifier.py"""</br>**
