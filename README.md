@@ -10,6 +10,6 @@
 * **執行 ```train_classifier.py```**，在執行的過程中，會同步顯示 Loss、Acc圖 (如下)
 ![訓練過程_Loss_Acc](./img/classification_loss_acc.gif)
 
-* **執行完畢會生成 ```AI-utils/metrics/Result_1/``` 資料夾，裡面會存放 : <u>模型權重</u>、<u>最終Loss_Acc圖</u>、<u>Confusion Matrix圖</u> 以及 一份<u>excel檔案(內含每個類別的acc、recall、fi-score)</u>**
+* **執行完畢會生成 ```AI-utils/metrics/Result_1/``` 資料夾，裡面會存放 : <u>模型權重</u>、<u>最終Loss_Acc圖</u>、<u>Confusion Matrix圖</u> 以及 一份<u>excel檔案(內含每個類別的acc、recall、fi-score)</u>**<br><br>
 ![metrics/Result_1/](./img/classification_metrics.png)
 
