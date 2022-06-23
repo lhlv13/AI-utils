@@ -5,7 +5,8 @@
 ### 範例
 以下我將藉由 Kaggle的 Ants&Bees 數據集來講解怎麼使用我的 package : <br>
 [數據集下載 : <a href="https://www.kaggle.com/datasets/gauravduttakiit/ants-bees" target="__blank">Ants&Bees Datasets</a>]
-
+* ```git clone https://github.com/lhlv13/AI-utils.git```
+* ```pip install -r requirements.txt```
 *  **將下載並解壓縮好的數據集放在 ```AI-utils/``` 資料夾內**
 * **執行 ```train_classifier.py```**，在執行的過程中，會同步顯示 Loss、Acc圖 (如下)
 ![訓練過程_Loss_Acc](./img/classification_loss_acc.gif)
