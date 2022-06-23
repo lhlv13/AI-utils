@@ -1,2 +1,8 @@
 # AI-utils
-My AI utils
+這是Yuyi正在整理的自己寫過的AI工具，Yuyi是誰!?!?，就是我啦XD，目前先放上分類，以後可能會陸陸續續增加其他的功能，組成一個有更多功能的package。
+
+## 分類
+### 範例
+以下我將藉由 Kaggle的 Ants&Bees 數據集來講解怎麼使用我的 package : 
+[Ants&Bees Datasets](https://www.kaggle.com/datasets/gauravduttakiit/ants-bees)
+
