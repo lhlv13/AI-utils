@@ -8,4 +8,6 @@
 
 *  **將下載並解壓縮好的數據集放在 ```AI-utils/``` 資料夾內**
 * **執行 ```train_classifier.py```**
+  在執行的過程中，會同步顯示 Loss、Acc圖 (如下)
+  !(訓練過程的Loss_Acc)[./img/classification_loss_acc.gif]
 
