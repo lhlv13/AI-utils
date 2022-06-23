@@ -6,48 +6,7 @@ Created on Sun Jun 19 22:44:07 2022
 
 """
 
-""" 使用方式
-    
-    import yuyi_nilm_package as yuyi
-    import torch, torchvision
-    from torch import nn
-    import torch.nn.functional as F
-    import torchvision.models as models
-    
-    
-    def main():
-        train_dataset = yuyi.classification.Classify_Dataset("train_img/train")
-        train_loader = torch.utils.data.DataLoader(train_dataset, 
-                                                    batch_size=32,
-                                                    shuffle=True,
-                                                    drop_last=False)
-        test_dataset = yuyi.classification.Classify_Dataset("train_img/val")
-        test_loader = torch.utils.data.DataLoader(test_dataset, 
-                                                    batch_size=len(test_dataset),
-                                                    shuffle=True,
-                                                    drop_last=False)
-        
-        ## {標籤 : 數字}
-        label_dict = train_dataset.getLabeldict()
-        
-        
-        
-        
-        ## 模型
-        model = models.resnet18(pretrained=True)
-        model.conv1 = nn.Conv2d(1, 64, 7, stride=(2, 2), padding=(3, 3), bias=False)
-        model.fc = nn.Linear(model.fc.in_features, 7)
-        
-        ## 訓練
-        epochs = 20
-        lr = 0.00001
-        opt = "adam"
-        classifyObj = yuyi.classification.Classify(label_dict)
-        classifyObj.train(train_loader, test_loader, model, epochs=epochs, lr=lr, opt=opt)
-        
-        ## 評估
-        classifyObj.evaluate(test_loader)
-"""
+
 
 
 from .classiifier import *
