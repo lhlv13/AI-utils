@@ -3,6 +3,6 @@
 
 ## 分類
 ### 範例
-以下我將藉由 Kaggle的 Ants&Bees 數據集來講解怎麼使用我的 package : 
-[Ants&Bees Datasets](https://www.kaggle.com/datasets/gauravduttakiit/ants-bees)
+以下我將藉由 Kaggle的 Ants&Bees 數據集來講解怎麼使用我的 package : <br>
+[數據集下載 : [Ants&Bees Datasets](https://www.kaggle.com/datasets/gauravduttakiit/ants-bees)]
 
