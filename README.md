@@ -4,5 +4,5 @@
 ## 分類
 ### 範例
 以下我將藉由 Kaggle的 Ants&Bees 數據集來講解怎麼使用我的 package : <br>
-[數據集下載 : [Ants&Bees Datasets](https://www.kaggle.com/datasets/gauravduttakiit/ants-bees)]
+[數據集下載 : <a href="https://www.kaggle.com/datasets/gauravduttakiit/ants-bees" target="__blank">Ants&Bees Datasets</a>]
 
