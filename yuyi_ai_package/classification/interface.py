@@ -6,7 +6,48 @@ Created on Sun Jun 19 22:44:07 2022
 
 """
 
-
+""" 使用方式
+    
+    import yuyi_nilm_package as yuyi
+    import torch, torchvision
+    from torch import nn
+    import torch.nn.functional as F
+    import torchvision.models as models
+    
+    
+    def main():
+        train_dataset = yuyi.classification.Classify_Dataset("train_img/train")
+        train_loader = torch.utils.data.DataLoader(train_dataset, 
+                                                    batch_size=32,
+                                                    shuffle=True,
+                                                    drop_last=False)
+        test_dataset = yuyi.classification.Classify_Dataset("train_img/val")
+        test_loader = torch.utils.data.DataLoader(test_dataset, 
+                                                    batch_size=len(test_dataset),
+                                                    shuffle=True,
+                                                    drop_last=False)
+        
+        ## {標籤 : 數字}
+        label_dict = train_dataset.getLabeldict()
+        
+        
+        
+        
+        ## 模型
+        model = models.resnet18(pretrained=True)
+        model.conv1 = nn.Conv2d(1, 64, 7, stride=(2, 2), padding=(3, 3), bias=False)
+        model.fc = nn.Linear(model.fc.in_features, 7)
+        
+        ## 訓練
+        epochs = 20
+        lr = 0.00001
+        opt = "adam"
+        classifyObj = yuyi.classification.Classify(label_dict)
+        classifyObj.train(train_loader, test_loader, model, epochs=epochs, lr=lr, opt=opt)
+        
+        ## 評估
+        classifyObj.evaluate(test_loader)
+"""
 
 
 from .classiifier import *
@@ -17,6 +58,7 @@ from PIL import Image
 import sklearn.metrics as metrics
 import seaborn as sns
 import pandas as pd
+import json
 
 class Classify_Dataset(Dataset):
     """ 
@@ -95,6 +137,10 @@ class Classify():
         folder_name = len(os.listdir(metrics_folder))
         self.__folder_path = os.path.join(metrics_folder, f"Result_{folder_name}/")
         os.mkdir(self.__folder_path)
+        
+        ## 儲存 label_dict
+        with open(os.path.join( self.__folder_path, "label_dict.json"), 'w') as f:
+            json.dump([self.__label_dict, self.__label_dict_reverse], f)
     
     
     def train(self, train_loader, test_loader, model, epochs=10, lr=0.0001, opt="sgd", early_stop=200):
