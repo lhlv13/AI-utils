@@ -23,7 +23,7 @@ import os
 from PIL import Image
 import numpy as np
 
-def readImgFolder(path):
+def readImgFolder(path, mode="img"):
     """ 
     Parameters
     -------------
@@ -49,8 +49,11 @@ def readImgFolder(path):
                 full_path = os.path.join(imgs_path, img)  ## 包含圖片名稱的完整路徑
                 if os.path.isfile(full_path):
                     ext = img.split(".")[-1].lower()
-                    if ext=="jpg" or ext=="png" or ext=="bmp":
-                        output_list.append([full_path, label])
+                    if mode == "img":
+                        if ext=="jpg" or ext=="png" or ext=="bmp":
+                            output_list.append([full_path, label])
+                        else:
+                            output_list.append([full_path, label])
     # print(output_list)
     return output_list
 
@@ -72,13 +75,15 @@ class MyCrossEntropy(nn.Module):
             
         return batch_loss / (i+1)
     
-def train_one_epoch(train_loader, model, loss_fn, optimizer, device):
+def train_one_epoch(train_loader, model, loss_fn, optimizer, device, dtype, input_num=1):
     size = len(train_loader.dataset)
     loss_v = 0
     acc_v = 0
     # model.requires_grad_(True)
     for batch, (X, y) in enumerate(train_loader):
-        X, y = X.to(device), y.to(device)
+        for i in range(input_num):
+            X[i] = X[i].to(device).type(dtype)
+        y = y.to(device)
         pred = model(X)
         # pred = pred.type(torch.long)
         # y = y.type(torch.long)
@@ -97,7 +102,7 @@ def train_one_epoch(train_loader, model, loss_fn, optimizer, device):
     acc_v /= size
     return model, loss_v, acc_v 
 
-def test(test_loader, model, loss_fn, device):
+def test(test_loader, model, loss_fn, device, dtype, input_num=1):
     size = len(test_loader.dataset)
     loss_v = 0
     acc_v = 0
@@ -105,7 +110,9 @@ def test(test_loader, model, loss_fn, device):
     
     with torch.no_grad():
         for X, y in test_loader:
-            X, y = X.to(device), y.to(device)
+            for i in range(input_num):
+                X[i] = X[i].to(device).type(dtype)
+            y = y.to(device)
             pred = model(X)
             loss = loss_fn(pred, y)
             loss_v += loss.item()
@@ -146,10 +153,11 @@ def plot_on_air(train_loss_list, train_acc_list, test_loss_list, test_acc_list, 
     plt.show()
     
 
-def train(train_loader, test_loader, model, epochs=10, lr=0.01, opt="sgd", early_stop=200, model_path="./model"):
+def train(train_loader, test_loader, model, epochs=10, lr=0.01, opt="sgd", early_stop=200, model_path="./model", input_num=1):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
     print("Using:",device)
+    dtype = torch.cuda.FloatTensor if device=="cuda" else torch.FloatTensor
     # loss_fn = nn.CrossEntropyLoss()
     loss_fn = MyCrossEntropy()
     if opt.lower()=="sgd":
@@ -164,8 +172,8 @@ def train(train_loader, test_loader, model, epochs=10, lr=0.01, opt="sgd", early
     no_improve = 0
     for epoch in range(1, epochs+1):
         print(f"Epoch: {epoch}----------------------------------------------")
-        model, train_loss, train_acc = train_one_epoch(train_loader, model, loss_fn, optimizer, device)
-        test_loss, test_acc = test(test_loader, model, loss_fn, device)
+        model, train_loss, train_acc = train_one_epoch(train_loader, model, loss_fn, optimizer, device, dtype, input_num)
+        test_loss, test_acc = test(test_loader, model, loss_fn, device, dtype, input_num)
         print(f"\tResult: loss: [{train_loss}, {test_loss}],  acc: [{train_acc*100:>.2f}%, {test_acc*100:>.2f}%]")
         
         ## 降低學習率
