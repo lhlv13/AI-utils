@@ -153,7 +153,7 @@ def plot_on_air(train_loss_list, train_acc_list, test_loss_list, test_acc_list, 
     plt.show()
     
 
-def train(train_loader, test_loader, model, epochs=10, lr=0.01, opt="sgd", early_stop=200, model_path="./model", input_num=1):
+def train(train_loader, test_loader, model, epochs=10, lr=0.01, opt="sgd", early_stop=200, model_path="./model", input_num=1, step_size=5):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
     print("Using:",device)
@@ -164,7 +164,7 @@ def train(train_loader, test_loader, model, epochs=10, lr=0.01, opt="sgd", early
         optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.6)
     else:
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    stepLR = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
+    stepLR = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.1)
     
     ## record
     train_loss_list, train_acc_list, test_loss_list, test_acc_list = list(), list(), list(), list()

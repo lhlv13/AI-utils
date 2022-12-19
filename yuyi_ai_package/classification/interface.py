@@ -180,10 +180,10 @@ class Classify():
             json.dump([self.__label_dict, self.__label_dict_reverse], f)
     
     
-    def train(self, train_loader, test_loader, model, epochs=10, lr=0.0001, opt="sgd", early_stop=200, input_num=1):
+    def train(self, train_loader, test_loader, model, epochs=10, lr=0.0001, opt="sgd", early_stop=200, input_num=1, step_size=5):
         """ 訓練模型 """
         self.__input_num = input_num
-        self.__model = train(train_loader, test_loader, model, epochs, lr, opt, early_stop, model_path=self.__folder_path, input_num=self.__input_num)
+        self.__model = train(train_loader, test_loader, model, epochs, lr, opt, early_stop, model_path=self.__folder_path, input_num=self.__input_num, step_size=step_size)
         return self.__model 
     
     def evaluate(self, test_loader, model_name="best.pth", device="cpu", input_num=1):
@@ -215,7 +215,7 @@ class Classify():
         # print(out1)
         
         ## 整理 precision、recall、f1-score
-        self.cleanResult(self.__label_dict_reverse, out1, save_path=self.__folder_path)
+        metrics_dict = self.cleanResult(self.__label_dict_reverse, out1, save_path=self.__folder_path)
         
         ## 畫圖
         label_names = [key for key in self.__label_dict]
@@ -237,6 +237,7 @@ class Classify():
         
         
         plt.savefig(os.path.join(self.__folder_path,"confusion.png"))
+        return metrics_dict
         
         
     def cleanResult(self, label_dict_reverse, metrics, save_path):
@@ -253,7 +254,49 @@ class Classify():
         print(data)
         data.to_csv(os.path.join(save_path, "metrics.csv"))
         return metrics_dict  
-        
+    
+    
+    def saveError(self, test_loader, model_name="best.pth", device="cpu", input_num=1):
+        """ 評估模型 """
+        device = device
+        dtype = torch.cuda.FloatTensor if device=="cuda" else torch.FloatTensor 
+        model_path = os.path.join(self.__folder_path, model_name)
+        parameters = torch.load(model_path)
+        self.__model.load_state_dict(parameters)
+        self.__model.to(device)
+        self.__model.eval()
+        path = os.path.join(self.__folder_path, "errorImage")
+        count = 0
+        if not os.path.isdir(path):
+            os.mkdir(path)
+        with torch.no_grad():
+            for x, y in test_loader:
+                if input_num > 1:
+                    for i in range(self.__input_num):
+                        x[i] = x[i].to(device).type(dtype)
+                else:
+                    x = x.to(device).type(dtype)
+                y = y.to(device)
+                pred = self.__model(x)
+                
+                ## 儲存錯誤分類的圖片
+                for i in range(len(y)):
+                    prediction = pred[:].argmax(1)[i].detach()
+                    real = y.detach().numpy()[i]    
+                    if prediction != real:
+                        # raise Exception(x.shape)
+                        img_path = os.path.join(path, f"real_{self.__label_dict_reverse[int(real)]}")
+                        if not os.path.isdir(img_path):
+                            os.mkdir(img_path)
+                        plt.clf()
+                        plt.plot(x.detach()[i][0])
+                        plt.title(f"{self.__label_dict_reverse[int(real)]}>>{self.__label_dict_reverse[int(prediction)]}")
+                        plt.savefig(os.path.join(img_path, f"{count}.jpg"))
+                        count += 1
+                    
+                    
+                
+        print("saveError Success!!")
         
     
     
